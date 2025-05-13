@@ -1,0 +1,11 @@
+{
+    "include": [
+        "src/**/*"
+    ],
+    "compilerOptions": {
+      "baseUrl": "src",
+      "outDir": "./dist",
+      "moduleResolution": "node",
+      "target": "ES6"
+    }
+  }

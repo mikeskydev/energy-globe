@@ -1,0 +1,15 @@
+{
+  "name": "world-energy-globe",
+  "scripts": {
+    "dev": "npx vite"
+  },
+  "version": "0.1.0",
+  "dependencies": {
+    "@types/three": "^0.176.0",
+    "three": "^0.176.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  }
+}

@@ -3,9 +3,6 @@ import { OrbitControls } from 'three/examples/jsm/Addons'
 
 const scene = new THREE.Scene();
 
-// TODO 
-scene.background = new THREE.TextureLoader().load("src/res/nightsky.jpg")
-scene.environment = scene.background;
 
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
@@ -14,25 +11,36 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 const controls = new OrbitControls(camera, renderer.domElement);
 
+// Night sky
+const bgGeo = new THREE.SphereGeometry(500, 60, 40);
+bgGeo.scale(-1, 1, 1);
+bgGeo.rotateZ(45 * Math.PI/180);
+const texLoad = new THREE.TextureLoader();
+const bgTex = texLoad.load("src/res/img/nightsky.jpg");
+bgTex.colorSpace = THREE.SRGBColorSpace;
+
+const bgMat = new THREE.MeshBasicMaterial( { map: bgTex })
+const bg = new THREE.Mesh(bgGeo, bgMat);
+scene.add(bg);
 
 // Globe setup
-const geometry = new THREE.SphereGeometry(2, 90, 90);
-const material = new THREE.MeshPhysicalMaterial( { color: 0x0000ff,  } );
-const globe = new THREE.Mesh( geometry, material );
+const globeGeo = new THREE.SphereGeometry(2, 90, 90);
+const globeTex = texLoad.load("src/res/img/world.png");
+const globeM = new THREE.MeshStandardMaterial( { map: globeTex } );
+const globe = new THREE.Mesh( globeGeo, globeM );
 scene.add( globe );
 
 // lighting
 const ambient = new THREE.AmbientLight(new THREE.Color(1, 1, 1), 1);
-const sun = new THREE.DirectionalLight(new THREE.Color(1, 1, 1), 1);
-sun.position.set(1,0,0);
+const sun = new THREE.DirectionalLight(new THREE.Color(1, 1, 1), 2);
+sun.position.set(-1,0,0);
 scene.add(ambient, sun);
 
 
 camera.position.z = 5;
 
 function animate() {
-    globe.rotation.x += 0.01;
-    globe.rotation.y += 0.01;
+    globe.rotation.y += 0.001;
 
     controls.update();
 renderer.render( scene, camera );

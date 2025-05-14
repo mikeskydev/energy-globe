@@ -2,7 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons'
 import { CountryLines } from './scripts/countries';
 import PickHelper from './scripts/countryPicker';
+import formatData from './scripts/dataFormatting';
 
+const data = formatData();
 const scene = new THREE.Scene();
 const texLoad = new THREE.TextureLoader();
 texLoad.setPath("src/res/img/");
@@ -29,7 +31,6 @@ const globeTex = texLoad.load("world.png");
 const globeNight = texLoad.load("worldNight.jpg");
 const globeNormal = texLoad.load("worldNormal.png");
 const globeM = new THREE.MeshStandardMaterial({ map: globeTex, normalMap: globeNormal });
-const globeCust = new THREE.ShaderMaterial({});
 const globe = new THREE.Mesh(globeGeo, globeM);
 scene.add(globe);
 globe.add(new CountryLines());

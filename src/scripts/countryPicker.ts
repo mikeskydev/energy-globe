@@ -18,19 +18,19 @@ export default class PickHelper {
         this.camera = camera;
 
         //Global listener for click function
-        window.addEventListener("mousedown", this);
-        window.addEventListener("touchstart", this);
+        window.addEventListener("mouseup", this);
+        window.addEventListener("touchend", this);
         window.addEventListener("mousemove", this);
     }
 
     handleEvent(ev: Event) {
         switch (ev.type) {
-        case "mousedown":
+        case "mouseup":
         {
             this.selectObject(ev);
             break;
         }
-        case "touchstart":
+        case "touchend":
         {
             this.selectObject(ev);
             break;
@@ -118,7 +118,7 @@ export default class PickHelper {
     pick(scene: Scene, camera: Camera) {
         this.raycaster.setFromCamera(this.mouseVector, camera);
 
-        const intersects = this.raycaster.intersectObjects(scene.children, true);
+        const intersects = this.raycaster.intersectObjects(scene.children);
 
         
         if (intersects.length > 0) {
@@ -135,7 +135,6 @@ export default class PickHelper {
             }
             return intersect;
         }
-        return false;
         return false;
     }
 }

@@ -18,6 +18,7 @@ class CountryLines extends Object3D {
                 }
             });
         });
+        
         fetch("src/res/countries_center.geojson").then(data => data.json()).then(data => {
             data.features.forEach(feature => {
                 const type = feature.geometry.type;
@@ -30,7 +31,6 @@ class CountryLines extends Object3D {
                     sprite.position.set(positionData[0], positionData[1], positionData[2]);
                     sprite.scale.set(0.1, 0.1, 0.1);
                     sprite.userData["type"] = "hotspot";
-                    //point.add(sprite);
                     this.add(sprite);
                 }
             });

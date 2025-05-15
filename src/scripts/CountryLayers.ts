@@ -1,4 +1,4 @@
-import { Group, DepthModes, Line, LineBasicMaterial, LineLoop, LineSegments, Object3D, Scene, Shape, Sprite, SpriteMaterial, Texture, TextureLoader, LessEqualDepth } from "three";
+import { LineBasicMaterial, LineSegments, Object3D, Sprite, SpriteMaterial, Texture, TextureLoader, LessEqualDepth } from "three";
 import GeoJsonGeometry from "three-geojson-geometry";
 
 class CountryLayers extends Object3D {
@@ -7,13 +7,36 @@ class CountryLayers extends Object3D {
     targetYear: number;
     hotspots: Object3D[] = [];
 
+    dataDisplay: Object3D;
+
     constructor(targetYear: number = 2022) {
         super();
         this.targetYear = targetYear;
         this.spriteTex = new TextureLoader().load("src/res/img/pin.png");
+
+        this.dataDisplay = this.buildDataDisplay();
+
         this.formatData().then(() => {
             this.#BuildCountries();
         });
+
+        window.addEventListener("hotspotselect", this);
+    }
+
+    handleEvent(ev: CustomEvent) {
+        if (ev.type == "hotspotselect") {
+            console.log(ev.detail);
+            // TODO parse data into dataDisplay.
+        }
+    }
+
+    buildDataDisplay(): Object3D {
+        const display = new Object3D();
+
+        `
+        
+        `
+        return display;
     }
 
     async formatData() {
@@ -115,13 +138,4 @@ class CountryLayers extends Object3D {
     }
 }
 
-
 export default CountryLayers;
-
-// {
-//     if (energyData[obj]["iso_code"] === undefined) return false;
-//     // energyData[obj].data.forEach(datum => {
-//     //     if (datum.year == 2023) {console.log("found");return true};
-//     // });
-//     return true;
-// }

@@ -5,7 +5,6 @@ export default class PickHelper {
     scene: Object3D[] = [];
     camera: Camera;
     hoveredObject: Object3D | undefined;
-    selectedObject: Object3D | undefined;
 
     constructor(renderer: HTMLCanvasElement, scene: Object3D[], camera: Camera) {
         this.renderer = renderer;
@@ -13,32 +12,41 @@ export default class PickHelper {
         this.camera = camera;
 
         //Global listener for click function
-        window.addEventListener("click", this);
-        window.addEventListener("touchend", this);
+        window.addEventListener("mousedown", this);
         window.addEventListener("mousemove", this);
     }
 
-    handleEvent(ev: Event) {
-        switch (ev.type) {
-            case "click":
+    handleEvent(e: Event) {
+        switch (e.type) {
+            case "mousedown":
             {
-                this.selectObject(ev);
-                break;
-            }
-            case "touchend":
-            {
-                this.selectObject(ev);
+                const selectedObject = PickHelper.pick(this.scene, this.camera, this.#getMouseVector(e));
+                if (selectedObject) {
+                    window.dispatchEvent(new CustomEvent("hotspotselect", { detail: selectedObject }))
+                }
                 break;
             }
             case "mousemove":
             {
-                this.hoverObject(ev);
+                if (this.hoveredObject) {
+                    const mat = (<LineBasicMaterial>(<LineSegments>this.hoveredObject.parent).material);
+                    mat.color = new Color("white");
+                    mat.linewidth = 1;
+                }
+                const pickedObject = PickHelper.pick(this.scene, this.camera, this.#getMouseVector(event));
+                if (pickedObject) {
+                    this.hoveredObject = pickedObject;
+                    const mat = (<LineBasicMaterial>(<LineSegments>this.hoveredObject.parent).material);
+                    mat.color = new Color('red');
+                    mat.linewidth = 2;
+                    console.log
+                }
                 break;
             }
         }
     }
 
-    #getMouseVector(event): Vector2 {
+    #getMouseVector(event: Event): Vector2 {
         const canvasBounds = this.renderer.getBoundingClientRect();
 
         const mouseVector = new Vector2();
@@ -53,35 +61,6 @@ export default class PickHelper {
         }
 
         return mouseVector;
-    }
-
-    selectObject(event: Event) {
-        if (this.selectedObject) {
-            // Tidy up
-        }
-
-        this.selectedObject = PickHelper.pick(this.scene, this.camera, this.#getMouseVector(event));
-
-        if (this.selectedObject) {
-            console.log(this.selectedObject.parent.userData["data"]);
-
-        }
-    }
-
-    hoverObject(event: Event) {
-        if (this.hoveredObject) {
-            const mat = (<LineBasicMaterial>(<LineSegments>this.hoveredObject.parent).material);
-            mat.color = new Color("white");
-            mat.linewidth = 1;
-        }
-        const pickedObject = PickHelper.pick(this.scene, this.camera, this.#getMouseVector(event));
-        if (pickedObject) {
-            this.hoveredObject = pickedObject;
-            const mat = (<LineBasicMaterial>(<LineSegments>this.hoveredObject.parent).material);
-            mat.color = new Color('red');
-            mat.linewidth = 2;
-            console.log
-        }
     }
 
     static pick(objects: Object3D[], camera: Camera, mouseVector: Vector2): Object3D | undefined {

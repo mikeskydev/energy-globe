@@ -1,0 +1,28 @@
+{
+    "coal_share_elec": 1.3833521604537964,
+    "coal_share_energy": 2.643442392349243,
+    "gas_share_elec": 34.2498893737793,
+    "gas_share_energy": 32.89327621459961,
+    "oil_share_elec": 4.282939910888672,
+    "oil_share_energy": 38.681392669677734,
+
+    "biofuel_share_elec": 11.533612251281738,
+    "biofuel_share_energy": 1.3091858625411987,
+    "hydro_share_elec": 1.7820028066635132,
+    "hydro_share_energy": 0.6989333033561707,
+    "low_carbon_share_elec": 60.08382034301758,
+    "low_carbon_share_energy": 25.781885147094727,
+    "nuclear_share_elec": 14.068622589111328,
+    "nuclear_share_energy": 5.261287212371826,
+    "solar_share_elec": 4.6032233238220215,
+    "solar_share_energy": 1.8603907823562622,
+    "wind_share_elec": 28.096359252929688,
+    "wind_share_energy": 11.031896591186523,
+    
+    "other_renewables_share_elec": 11.581315994262695,
+    "other_renewables_share_energy": 5.620192050933838,
+    "renewables_share_elec": 46.01519775390625,
+    "renewables_share_energy": 20.520597457885742,
+    "fossil_share_elec": 39.91618347167969,
+    "fossil_share_energy": 74.2181167602539
+}

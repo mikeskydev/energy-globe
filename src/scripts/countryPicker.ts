@@ -1,140 +1,105 @@
-import { Camera, Object3D, Object3DEventMap, Raycaster, Scene, Vector2 } from "three";
+import { Camera, Color, LineBasicMaterial, LineSegments, Object3D, Raycaster, Vector2 } from "three";
 
 export default class PickHelper {
-    private raycaster: Raycaster;
-    private mouseVector: Vector2;
+    renderer: HTMLCanvasElement;
+    scene: Object3D[] = [];
+    camera: Camera;
+    hoveredObject: Object3D | undefined;
+    selectedObject: Object3D | undefined;
 
-    private renderer: HTMLCanvasElement;
-    private scene: Scene;
-    private camera: Camera;
-    private hoveredHotspot: Object3D<Object3DEventMap> | undefined;
-
-    constructor(renderer: HTMLCanvasElement, scene: Scene, camera: Camera) {
-        this.raycaster = new Raycaster();
-        this.mouseVector = new Vector2(0, 0);
-
+    constructor(renderer: HTMLCanvasElement, scene: Object3D[], camera: Camera) {
         this.renderer = renderer;
         this.scene = scene;
         this.camera = camera;
 
         //Global listener for click function
-        window.addEventListener("mouseup", this);
+        window.addEventListener("click", this);
         window.addEventListener("touchend", this);
         window.addEventListener("mousemove", this);
     }
 
     handleEvent(ev: Event) {
         switch (ev.type) {
-        case "mouseup":
-        {
-            this.selectObject(ev);
-            break;
-        }
-        case "touchend":
-        {
-            this.selectObject(ev);
-            break;
-        }
-        case "mousemove":
-        {
-            this.hoverObject(ev);
-            break;
-        }
+            case "click":
+            {
+                this.selectObject(ev);
+                break;
+            }
+            case "touchend":
+            {
+                this.selectObject(ev);
+                break;
+            }
+            case "mousemove":
+            {
+                this.hoverObject(ev);
+                break;
+            }
         }
     }
 
-    selectObject(event: Event) {
+    #getMouseVector(event): Vector2 {
         const canvasBounds = this.renderer.getBoundingClientRect();
 
+        const mouseVector = new Vector2();
+
         if (event instanceof MouseEvent) {
-            const ev = <MouseEvent>event;
-            this.mouseVector.x = ((ev.clientX - canvasBounds.left) / (canvasBounds.right - canvasBounds.left)) * 2 - 1;
-            this.mouseVector.y = - ((ev.clientY - canvasBounds.top) / (canvasBounds.bottom - canvasBounds.top)) * 2 + 1;
+            mouseVector.x = ((event.clientX - canvasBounds.left) / (canvasBounds.right - canvasBounds.left)) * 2 - 1;
+            mouseVector.y = - ((event.clientY - canvasBounds.top) / (canvasBounds.bottom - canvasBounds.top)) * 2 + 1;
         }
         else if (event instanceof TouchEvent) {
-            const ev = <TouchEvent>event;
-            this.mouseVector.x = ((ev.touches[0].clientX - canvasBounds.left) / (canvasBounds.right - canvasBounds.left)) * 2 - 1;
-            this.mouseVector.y = - ((ev.touches[0].clientY - canvasBounds.top) / (canvasBounds.bottom - canvasBounds.top)) * 2 + 1;
+            mouseVector.x = ((event.touches[0].clientX - canvasBounds.left) / (canvasBounds.right - canvasBounds.left)) * 2 - 1;
+            mouseVector.y = - ((event.touches[0].clientY - canvasBounds.top) / (canvasBounds.bottom - canvasBounds.top)) * 2 + 1;
         }
 
-        const pickedObject = this.pick(this.scene, this.camera);
+        return mouseVector;
+    }
 
-        if (pickedObject) {
-            const pickObject = pickedObject.object;
-            if (pickedObject) {
-                //const hotspot: HotSpot = <HotSpot>pickObject;
-                //hotspot.clicked();
-            }
+    selectObject(event: Event) {
+        if (this.selectedObject) {
+            // Tidy up
+        }
+
+        this.selectedObject = PickHelper.pick(this.scene, this.camera, this.#getMouseVector(event));
+
+        if (this.selectedObject) {
+            console.log(this.selectedObject.parent.userData["data"]);
+
         }
     }
 
     hoverObject(event: Event) {
-        return;
-
-        if (event instanceof MouseEvent) {
-            const canvasBounds = this.renderer.getBoundingClientRect();
-            const ev = <MouseEvent>event;
-            this.mouseVector.x = ((ev.clientX - canvasBounds.left) / (canvasBounds.right - canvasBounds.left)) * 2 - 1;
-            this.mouseVector.y = - ((ev.clientY - canvasBounds.top) / (canvasBounds.bottom - canvasBounds.top)) * 2 + 1;
+        if (this.hoveredObject) {
+            const mat = (<LineBasicMaterial>(<LineSegments>this.hoveredObject.parent).material);
+            mat.color = new Color("white");
+            mat.linewidth = 1;
         }
-
-        const pickedObject = this.pick(this.scene, this.camera);
+        const pickedObject = PickHelper.pick(this.scene, this.camera, this.#getMouseVector(event));
         if (pickedObject) {
-            // Hotspot representation is a sprite object, whose parent is of type HotSpot
-            const pickParent = pickedObject.object.parent;
-            if (pickParent) {
-                switch (pickParent.userData["type"] ) {
-                case "HotSpot":
-                {
-                    const hotspot: HotSpot = <HotSpot>pickParent;
-                    if (hotspot.selected) {
-                        break;
-                    }
-                    this.hoverMouse(true);
-                    this.hoverHotspot(hotspot, true);
-                    if (this.hoveredHotspot && !(this.hoveredHotspot as HotSpot).selected && this.hoveredHotspot != hotspot) {
-                        this.hoverHotspot(this.hoveredHotspot as HotSpot, false);
-                    }
-                    this.hoveredHotspot = pickParent;
-                    break;
-                }
-                case "GUIHotSpot":
-                {
-                    this.hoverMouse(true);
-                    break;
-                }
-                default:
-                {
-                    this.resetHoveredHotspot();
-                    break;
-                }
-                }
-            }
-        } else {
-            this.resetHoveredHotspot();
+            this.hoveredObject = pickedObject;
+            const mat = (<LineBasicMaterial>(<LineSegments>this.hoveredObject.parent).material);
+            mat.color = new Color('red');
+            mat.linewidth = 2;
+            console.log
         }
     }
 
-    pick(scene: Scene, camera: Camera) {
-        this.raycaster.setFromCamera(this.mouseVector, camera);
+    static pick(objects: Object3D[], camera: Camera, mouseVector: Vector2): Object3D | undefined {
+        const raycaster = new Raycaster();
+        raycaster.setFromCamera(mouseVector, camera);
 
-        const intersects = this.raycaster.intersectObjects(scene.children);
+        const intersects = raycaster.intersectObjects(objects);
 
-        
         if (intersects.length > 0) {
-            let intersect = intersects[0];
+            let intersect: Object3D;
 
             for (let i = 0; i < intersects.length; i++) {
                 if (intersects[i].object.userData["type"] == "hotspot") {
-                    console.log("picked!");
-                    return intersects[i];
-                }
-                else if (intersects[i].object.parent?.visible) {
-                    //intersect = intersects[i];
+                    intersect = intersects[i].object;
                 }
             }
             return intersect;
         }
-        return false;
+        return;
     }
 }

@@ -1,20 +1,21 @@
 import { LineBasicMaterial, LineSegments, Object3D, Sprite, SpriteMaterial, Texture, TextureLoader, LessEqualDepth } from "three";
 import GeoJsonGeometry from "three-geojson-geometry";
+import DataDisplay from "./DataDisplay";
 
 class CountryLayers extends Object3D {
     data: {};
     spriteTex: Texture
     targetYear: number;
     hotspots: Object3D[] = [];
+    dataDisplay: DataDisplay;
 
-    dataDisplay: Object3D;
-
-    constructor(targetYear: number = 2022) {
+    constructor(targetYear: number = 2022, dataDisplay: DataDisplay) {
         super();
         this.targetYear = targetYear;
         this.spriteTex = new TextureLoader().load("src/res/img/pin.png");
 
-        this.dataDisplay = this.buildDataDisplay();
+        this.dataDisplay = dataDisplay;
+        this.add(this.dataDisplay);
 
         this.formatData().then(() => {
             this.#BuildCountries();
@@ -24,19 +25,34 @@ class CountryLayers extends Object3D {
     }
 
     handleEvent(ev: CustomEvent) {
-        if (ev.type == "hotspotselect") {
-            console.log(ev.detail);
-            // TODO parse data into dataDisplay.
-        }
-    }
-
-    buildDataDisplay(): Object3D {
-        const display = new Object3D();
-
-        `
+        switch(ev.type) {
+            case "hotspotselect":
+                const data = ev.detail;
         
-        `
-        return display;
+                const sourceValues = data.userData.data.data;
+                const values = {};
+
+                values["name"] = data.userData.data.name;
+
+                values["coal"] = sourceValues.coal_share_elec;
+                values["gas"] = sourceValues.gas_share_elec;
+                values["oil"] = sourceValues.oil_share_elec;
+                values["nuclear"] = sourceValues.nuclear_share_elec;
+
+                values["solar"] = sourceValues.solar_share_elec;
+                values["hydro"] = sourceValues.hydro_share_elec;
+                values["wind"] = sourceValues.wind_share_elec;
+                values["biofuel"] = sourceValues.biofuel_share_elec;
+
+                const [azimuth, polar] = data.userData.data.centroid.coordinates;
+                
+                this.dataDisplay.setData(data.position, azimuth, polar, values);
+            case "":
+                break;
+        }
+        if (ev.type == "hotspotselect") {
+        }
+
     }
 
     async formatData() {
@@ -49,6 +65,8 @@ class CountryLayers extends Object3D {
                 let found = false;
                 this.data[obj].data.forEach(datum => {
                     if (datum.year == this.targetYear) {
+                        // collapse data down to specific year
+                        this.data[obj].data = datum;
                         found = true;
                         return;
                     }
@@ -117,6 +135,7 @@ class CountryLayers extends Object3D {
                     const positionData = geom.attributes.position.array;
     
                     const sprite = new Sprite(new SpriteMaterial({ map: this.spriteTex, color: '#66d19e', depthFunc: LessEqualDepth}));
+                    sprite.renderOrder = 2;
                     sprite.position.set(positionData[0], positionData[1], positionData[2]);
                     sprite.scale.set(0.05, 0.05, 0.05);
 
@@ -125,7 +144,7 @@ class CountryLayers extends Object3D {
                     this.hotspots.push(sprite);
 
                     country.add(sprite);
-                    country.userData["data"] = countryData
+                    sprite.userData["data"] = countryData
                     this.add(country);
                 } else {
                     console.warn("No centroid found for", countryData["iso_code"] + ":", countryData["name"]);

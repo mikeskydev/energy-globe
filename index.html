@@ -31,12 +31,22 @@
         text-align: center;
         z-index: 1;
       }
+
+      #container {
+        cursor: grab;
+
+        :active {
+          cursor: grabbing;
+        }
+      }
+
+      
     </style>
   </head>
   <body>
     <div id="container"></div>
     <div id="info">
-      World Energy Globe <br/>
+      World Electricity Breakdown <br/>
       Click a country to explore data.
     </div>
     <script type="module" src="src/main.ts"></script>

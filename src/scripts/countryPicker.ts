@@ -1,6 +1,6 @@
-import { Camera, Color, LineBasicMaterial, LineSegments, Object3D, Raycaster, Vector2 } from "three";
+import { AlwaysDepth, Camera, Color, Layers, LessEqualDepth, LineBasicMaterial, LineSegments, Object3D, Raycaster, Vector2 } from "three";
 
-export default class PickHelper {
+export default class CountryPicker {
     renderer: HTMLCanvasElement;
     scene: Object3D[] = [];
     camera: Camera;
@@ -19,30 +19,32 @@ export default class PickHelper {
     handleEvent(e: Event) {
         switch (e.type) {
             case "mousedown":
-            {
-                const selectedObject = PickHelper.pick(this.scene, this.camera, this.#getMouseVector(e));
+                const selectedObject = CountryPicker.pick(this.scene, this.camera, this.#getMouseVector(e));
                 if (selectedObject) {
                     window.dispatchEvent(new CustomEvent("hotspotselect", { detail: selectedObject }))
                 }
+                else {
+                    window.dispatchEvent(new CustomEvent("hotspotdeselect"));
+                }
                 break;
-            }
             case "mousemove":
-            {
                 if (this.hoveredObject) {
                     const mat = (<LineBasicMaterial>(<LineSegments>this.hoveredObject.parent).material);
                     mat.color = new Color("white");
-                    mat.linewidth = 1;
+                    this.hoveredObject.parent.renderOrder = 0;
                 }
-                const pickedObject = PickHelper.pick(this.scene, this.camera, this.#getMouseVector(event));
+                this.hoveredObject = undefined;
+                const pickedObject = CountryPicker.pick(this.scene, this.camera, this.#getMouseVector(e));
                 if (pickedObject) {
                     this.hoveredObject = pickedObject;
                     const mat = (<LineBasicMaterial>(<LineSegments>this.hoveredObject.parent).material);
                     mat.color = new Color('red');
-                    mat.linewidth = 2;
-                    console.log
+                    this.hoveredObject.parent.renderOrder = 1;
+                    this.renderer.parentElement.style.cursor = "pointer";
+                } else {
+                    this.renderer.parentElement.style.cursor = "";
                 }
                 break;
-            }
         }
     }
 

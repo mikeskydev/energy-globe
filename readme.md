@@ -3,6 +3,8 @@
 Powered by Energy Consumption from Our World in Data.
 https://ourworldindata.org/energy
 
+![Screenshot of the experience running, showing a globe and data for France](screenshot.png)
+
 ## Development
 
 The project uses Vite for development and build.
@@ -31,6 +33,7 @@ Files will be saved to the `dist` folder.
 - Move key to below bars
 - Fix some missing outline/centroid data
 - Resizable
+- Accessibility study
 
 ## Resources
 

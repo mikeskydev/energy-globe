@@ -31,15 +31,17 @@ export default class DataDisplay extends Object3D {
         super();
         this.controls = controls;
         const scale = 0.002;
+        const spacing = 0.03;
+
         const mat = new MeshStandardMaterial();
         const geom = new CylinderGeometry(0.01, 0.01, scale);
         const offset = new Mesh(geom);
         
-        let clone;
         const entries = Object.entries(this.sources);
         // midpoint
-        let iter = -entries.length/2 * 0.03;
-
+        let iter = -entries.length/2 * spacing;
+        
+        let clone;
         entries.forEach(([key, source]) => {
             clone = offset.clone();
             source.add(clone);
@@ -48,7 +50,7 @@ export default class DataDisplay extends Object3D {
             clone.material.color = this.colors[key]
             source.translateX(iter);
             this.add(source);
-            iter += 0.03;
+            iter += spacing;
         });
     }
 
@@ -64,6 +66,7 @@ export default class DataDisplay extends Object3D {
         this.controls.dollyTo(2.5, true);
         this.controls.rotateTo((azimuth)*Math.PI/180, (90-polar)*Math.PI/180, true);
 
+        console.log(dataValues);
         Object.keys(this.sources).forEach(key => {
             const scale = dataValues[key] ?? 0;
             this.sources[key].scale.y = scale;

@@ -43,6 +43,7 @@ class CountryLayers extends Object3D {
                 values["hydro"] = sourceValues.hydro_share_elec;
                 values["wind"] = sourceValues.wind_share_elec;
                 values["biofuel"] = sourceValues.biofuel_share_elec;
+                values["other"] = sourceValues.other_renewables_share_elec;
 
                 const [azimuth, polar] = data.userData.data.centroid.coordinates;
                 

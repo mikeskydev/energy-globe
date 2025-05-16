@@ -26,7 +26,7 @@ import {
 import { OrbitControls } from 'three/examples/jsm/Addons';
 
 import CountryLayers from './scripts/CountryLayers';
-import CountryPicker from './scripts/CountryPicker';
+import CountryPicker from './scripts/countryPicker';
 import DataDisplay from './scripts/DataDisplay';
 import CameraControls from 'camera-controls';
 
@@ -105,8 +105,8 @@ class App {
         function animate() {
             //globe.rotation.y += 0.001;
             const delta = clock.getDelta();
-            controls.update(delta);
-        renderer.render( scene, camera );
+            const updated = controls.update(delta);
+            renderer.render( scene, camera );
         }
         
         renderer.setAnimationLoop( animate );

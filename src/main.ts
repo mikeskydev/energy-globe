@@ -37,7 +37,7 @@ class App {
 
     constructor() {
         const texLoad = new TextureLoader();
-        texLoad.setPath("src/res/img/");
+        texLoad.setPath("img/");
 
         const scene = new Scene();
         const bgTex = texLoad.load("nightsky.jpg");
@@ -82,6 +82,8 @@ class App {
         controls.minDistance = 2.5;
         controls.maxDistance = 4;
         controls.distance = 4;
+        controls.azimuthRotateSpeed = 0.5;
+        controls.polarRotateSpeed = 0.5;
         // controls.enableDamping = true;
         // controls.zoomSpeed = 0.5;
         //controls.dampingFactor = 2;

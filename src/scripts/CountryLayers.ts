@@ -12,7 +12,7 @@ class CountryLayers extends Object3D {
     constructor(targetYear: number = 2022, dataDisplay: DataDisplay) {
         super();
         this.targetYear = targetYear;
-        this.spriteTex = new TextureLoader().load("src/res/img/pin.png");
+        this.spriteTex = new TextureLoader().load("img/pin.png");
 
         this.dataDisplay = dataDisplay;
         this.add(this.dataDisplay);
@@ -59,7 +59,7 @@ class CountryLayers extends Object3D {
     async formatData() {
         // Filter for only countries and targetYear data
         // TODO: nice slider for all years?
-        this.data = await fetch("src/res/data/owid-energy-data.json").then(data => data.json());
+        this.data = await fetch("data/owid-energy-data.json").then(data => data.json());
         this.data = Object.keys(this.data)
             .filter(obj => {
                 if (this.data[obj].iso_code === undefined) return false;
@@ -82,7 +82,7 @@ class CountryLayers extends Object3D {
             }, {});
 
         // Add borders.
-        let borders = await fetch("src/res/data/ne_50m_admin_0_countries.geojson").then(data => data.json());
+        let borders = await fetch("data/ne_50m_admin_0_countries.geojson").then(data => data.json());
         borders.features.forEach(feature => {
             let code = feature.properties.ISO_A3;
             if (code) {
@@ -94,7 +94,7 @@ class CountryLayers extends Object3D {
         })
 
         // Centroids. Data is missing ISO-3, so we do a lookup using the ISO-2 from borders.
-        let centroids = await fetch("src/res/data/countries_center.geojson").then(data => data.json());
+        let centroids = await fetch("data/countries_center.geojson").then(data => data.json());
         centroids = centroids.features.reduce((dict, key) => {
             const iso = key.properties.ISO;
             const newIso = this.#IsoLookup(this.data, iso);
@@ -132,7 +132,7 @@ class CountryLayers extends Object3D {
                 const centroid = countryData["centroid"];
                 if (centroid && centroid.type == "Point") {
                     // letGeoJson do the calc for us, but steal it's data.
-                    const geom = new GeoJsonGeometry(centroid, 2.05);
+                    const geom = new GeoJsonGeometry(centroid, 2.03);
                     const positionData = geom.attributes.position.array;
     
                     const sprite = new Sprite(new SpriteMaterial({ map: this.spriteTex, color: '#66d19e', depthFunc: LessEqualDepth}));

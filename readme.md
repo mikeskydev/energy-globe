@@ -1,4 +1,4 @@
-# World Energy Globe - Electricity
+# Energy Globe - Electricity
 
 Powered by Energy Consumption from Our World in Data.
 https://ourworldindata.org/energy

@@ -1,3 +1,23 @@
+# World Energy Globe - Electricity
+
+Powered by Energy Consumption from Our World in Data.
+https://ourworldindata.org/energy
+
+## Development
+
+The project uses Vite for development and build.
+
+```sh
+npm i
+npm run dev
+```
+Vite will open a live environment: `localhost:5173`
+
+## Build
+```
+npm run build
+```
+Files will be saved to the `dist` folder
 
 ## Resources
 

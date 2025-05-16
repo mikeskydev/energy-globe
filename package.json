@@ -1,7 +1,8 @@
 {
   "name": "world-energy-globe",
   "scripts": {
-    "dev": "npx vite"
+    "dev": "npx vite",
+    "build": "npx vite build"
   },
   "version": "0.1.0",
   "dependencies": {

@@ -69,17 +69,19 @@ export default class CountryPicker {
         const raycaster = new Raycaster();
         raycaster.setFromCamera(mouseVector, camera);
 
+        // Objects subset is just the pin sprites, so small lookup
         const intersects = raycaster.intersectObjects(objects);
 
         if (intersects.length > 0) {
             let intersect: Object3D;
 
+            // Objects ordered by distance, so should pick the one on the near side of the globe :)
             for (let i = 0; i < intersects.length; i++) {
                 if (intersects[i].object.userData["type"] == "hotspot") {
                     intersect = intersects[i].object;
+                    return intersect;
                 }
             }
-            return intersect;
         }
         return;
     }

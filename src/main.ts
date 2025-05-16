@@ -36,6 +36,7 @@ class App {
     controls: OrbitControls;
 
     constructor() {
+        // reusable texture loader
         const texLoad = new TextureLoader();
         texLoad.setPath("img/");
 
@@ -50,6 +51,7 @@ class App {
         // lighting
         const ambient = new AmbientLight(new Color(1, 1, 1), 1);
         const sun = new DirectionalLight(new Color(1, 1, 1), 2);
+        // line up with bg
         sun.position.set(-1,0,0);
         scene.add(ambient, sun);
     
@@ -84,21 +86,19 @@ class App {
         controls.distance = 4;
         controls.azimuthRotateSpeed = 0.5;
         controls.polarRotateSpeed = 0.5;
-        // controls.enableDamping = true;
-        // controls.zoomSpeed = 0.5;
-        //controls.dampingFactor = 2;
         
         // Globe setup
         const globeGeo = new SphereGeometry(2, 90, 90, -Math.PI/2);
         const globeTex = texLoad.load("world.png");
         const globeNight = texLoad.load("worldNight.jpg");
         const globeNormal = texLoad.load("worldNormal.png");
-        const globeM = new MeshStandardMaterial({ map: globeTex, normalMap: globeNormal });
-        const globe = new Mesh(globeGeo, globeM);
+        const globeMat = new MeshStandardMaterial({ map: globeTex, normalMap: globeNormal });
+        const globe = new Mesh(globeGeo, globeMat);
         scene.add(globe);
         
-        // data
+        // data widget
         const dataDisplay = new DataDisplay(controls);
+        // 2022 has nice data, 2023 is missing a lot
         const builder = new CountryLayers(2022, dataDisplay);
         globe.add(builder);
         

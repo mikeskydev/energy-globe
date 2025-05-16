@@ -11,13 +11,26 @@ The project uses Vite for development and build.
 npm i
 npm run dev
 ```
+
 Vite will open a live environment: `localhost:5173`
 
 ## Build
+
 ```
 npm run build
 ```
-Files will be saved to the `dist` folder
+
+Files will be saved to the `dist` folder.
+
+## TODOs
+
+- Day/Night globe cycle using a custom shader
+- Atmosphere effect
+- Slider to select different data years
+- Country nametags and %ages on bars
+- Move key to below bars
+- Fix some missing outline/centroid data
+- Resizable
 
 ## Resources
 

@@ -38,36 +38,44 @@ export default class DataDisplay extends Object3D {
         const offset = new Mesh(geom);
         
         const entries = Object.entries(this.sources);
-        // midpoint
+        // find midpoint and start iteration from leftmost source
         let iter = -entries.length/2 * spacing;
         
         let clone;
+        // factory for each source while preserving dict lookup
         entries.forEach(([key, source]) => {
             clone = offset.clone();
             source.add(clone);
             clone.translateY(scale/2);
             clone.material = mat.clone();
-            clone.material.color = this.colors[key]
+            clone.material.color = this.colors[key];
+            // line format
+            // TODO: circle might be pretty?
             source.translateX(iter);
-            this.add(source);
             iter += spacing;
+            this.add(source);
         });
     }
 
     setData(position: Vector3, azimuth: number, polar: number, dataValues: {}) {
         const newPos = position.clone();
+        // reset position to origin for lookAt to work
         this.position.set(0, 0, 0);
         this.rotation.set(0, 0, 0);
+
         this.lookAt(newPos);
+        // tilt forwards slightly for 3D
         this.rotateX(Math.PI/3);
         
         this.position.set(newPos.x, newPos.y, newPos.z);
 
+        // smooth camera transition to focus on data
         this.controls.dollyTo(2.5, true);
         this.controls.rotateTo((azimuth)*Math.PI/180, (90-polar)*Math.PI/180, true);
 
         console.log(dataValues);
         Object.keys(this.sources).forEach(key => {
+            // If data present, scale each bar for %age of fuel share
             const scale = dataValues[key] ?? 0;
             this.sources[key].scale.y = scale;
         });

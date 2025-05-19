@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>World Energy Globe</title>
+    <meta charset="utf-8">
+    <style>
+      body {
+        margin: 0;
+        font-family: Monospace;
+        color: #fff;
+        font-size: 13px;
+        line-height: 24px;
+        overscroll-behavior: none;
+      }
+
+      a {
+        color: #ff0;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      #info {
+        position: absolute;
+        top: 0px;
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        text-align: center;
+        z-index: 1;
+      }
+
+      #container {
+        cursor: grab;
+
+        :active {
+          cursor: grabbing;
+        }
+      }
+
+      
+    </style>
+    <script type="module" crossorigin src="assets/index-DHAh420D.js"></script>
+  </head>
+  <body>
+    <div id="container"></div>
+    <div id="info">
+      World Electricity Breakdown - Click a country to explore data. <br/>
+      Data from <a href="https://ourworldindata.org/energy" target="_blank">Our World In Data</a>, 2022 <br/>
+      <span style="background-color: rgba(139, 139, 139, 0.467);">
+        Key: <span style="color: black">Coal </span>
+        <span style="color: #d4631e">Gas </span>
+        <span style="color: #332603">Oil </span>
+        <span style="color: lightblue">Nuclear </span>
+        <span style="color: blue">Hydro </span>
+        <span style="color: green">Biofuel </span>
+        <span style="color: yellow">Solar </span>
+        <span style="color: white">Wind </span>
+        <span style="color: pink">Other </span>
+      </span>
+      
+    </div>
+
+  </body>
+</html>
